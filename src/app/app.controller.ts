@@ -42,8 +42,6 @@ export class AppController {
       const response = await this.appService.getActive(req.query);
       const responseData = JSON.parse(response.data);
 
-      console.log(responseData);
-
       if (responseData.data?.ws) {
         const puppeteerUrl = new URL(responseData.data.ws.puppeteer);
 
@@ -56,7 +54,6 @@ export class AppController {
 
       res.status(response.status).send(responseData);
     } catch (error) {
-      console.log(error);
       res
         .status(error.response?.status || 500)
         .send(error.response?.data || 'Internal Server Error');
