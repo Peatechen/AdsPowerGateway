@@ -36,6 +36,30 @@ export class AppController {
     }
   }
 
+  @Get('active')
+  async getActive(@Req() req: Request, @Res() res: Response) {
+    try {
+      const response = await this.appService.getActive(req.query);
+      const responseData = JSON.parse(response.data);
+
+      if (responseData.data) {
+        const puppeteerUrl = new URL(responseData.data.ws.puppeteer);
+
+        puppeteerUrl.port = this.configService.get('PORT');
+
+        responseData.data.ws.puppeteer = puppeteerUrl.href;
+        responseData.data.ws.selenium = puppeteerUrl.host;
+        responseData.data.debug_port = puppeteerUrl.port;
+      }
+
+      res.status(response.status).send(responseData);
+    } catch (error) {
+      res
+        .status(error.response?.status || 500)
+        .send(error.response?.data || 'Internal Server Error');
+    }
+  }
+
   @Get('start')
   async startBrowser(@Req() req: Request, @Res() res: Response) {
     try {

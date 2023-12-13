@@ -20,9 +20,20 @@ export class AppService {
     return await this.axios.get('/api/v1/browser/local-active');
   }
 
+  async getActive(params: Record<string, any>) {
+    return await this.axios.get('/api/v1/browser/active', {
+      params,
+    });
+  }
+
   async startBrowser(startParams: Record<string, any>) {
     return await this.axios.get('/api/v1/browser/start', {
-      params: startParams,
+      params: {
+        ip_tab: 0,
+        open_tabs: 1,
+        headless: 1,
+        ...startParams,
+      },
     });
   }
 
