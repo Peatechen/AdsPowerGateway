@@ -10,11 +10,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { AppModule } from './app/app.module';
 import { AppService } from './app/app.service';
 import { writeResponse } from './utils/writeResponse';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const appService = app.get(AppService);
+  const configService = app.get(ConfigService);
   const logger = app.get(Logger);
 
   await app.listen(process.env.PORT || 8080, async () => {
@@ -72,7 +74,9 @@ async function bootstrap() {
               throw error;
             } else {
               proxy.ws(req, socket, head, {
-                target: `ws://127.0.0.1:${targetPort}`,
+                target: `ws://${configService.get(
+                  'ADS_POWER_SERVER_HOST',
+                )}:${targetPort}`,
                 changeOrigin: true,
                 toProxy: true,
               });

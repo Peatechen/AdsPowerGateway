@@ -8,7 +8,11 @@ export class AppService {
 
   constructor(private readonly configServer: ConfigService) {
     this.axios = new Axios({
-      baseURL: this.configServer.get('ADS_POWER_SERVER_URL'),
+      baseURL: new URL(
+        `http://${this.configServer.get(
+          'ADS_POWER_SERVER_HOST',
+        )}:${this.configServer.get('ADS_POWER_SERVER_PORT')}`,
+      ).origin,
     });
   }
 
